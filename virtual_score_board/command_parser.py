@@ -25,7 +25,6 @@ class SignMeOut(Exception):
 class Parser(object):
     def __init__(self, game_object):
         self.game = game_object
-        self.user = None
 
     def validate(self, command, args):
         extra_args = set(args) - set(command.__annotations__)
@@ -123,7 +122,7 @@ class Parser(object):
             raise NotLogged("Not Logged!")
         self.game.period.set_points(arg)
 
-    def command_sign_in(self, login: string, password: string):
+    def command_sign_in(self, login: string, password: string, user):
         with open("/var/passwords/pass.txt") as password_file:
             hashes = password_file.readlines()
             for line in hashes:
@@ -133,5 +132,5 @@ class Parser(object):
                         raise HoorayCorrectCredentials("Credentials are well!")
             raise WrongCredentials("The credentials are wrong! Not logged!")
 
-    def command_sign_out(self):
+    def command_sign_out(self, user):
         raise SignMeOut("I want to be offline!")

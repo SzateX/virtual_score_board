@@ -1,3 +1,5 @@
+from virtual_score_board.models import User
+
 class ParserTypeError(Exception):
     pass
 
@@ -30,6 +32,11 @@ def string(value):
 def boolean(value):
     if not isinstance(value, bool):
         raise ParserTypeError("Value is not boolean: %s" % value)
+
+
+def is_user(value):
+    if not isinstance(value, User) or value is None:
+        raise ParserTypeError("Only User instance or None value permitted!")
 
 
 def integer_range(a, b):

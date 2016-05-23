@@ -50,7 +50,7 @@ class ServerHandler(WebSocketServerProtocol):
                 self.sendMessage(state.encode('utf-8'), isBinary=False)
                 return
             try:
-                self.parser.parse_and_execute(data)
+                self.parser.parse_and_execute(data, self.user)
             except (ParseError, ParserTypeError, NotLogged, WrongCredentials)  as e:
                 state = json.dumps({"Error": str(e)})
                 self.sendMessage(state.encode('utf-8'), isBinary=False)

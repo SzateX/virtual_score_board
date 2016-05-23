@@ -7,7 +7,7 @@ setup(
     author = "Jakub Szatkowski",
     author_email = "jaksza18@gmail.com",
     description = ("A virtual scoreboard for presenting match details."),
-    install_requires = ['autobahn>=0.12.1', 'Twisted>=15.5.0', 'pytest>=2.8.7', 'click>=6.2', 'passlib>=2.0.0'],
+    install_requires = ['autobahn>=0.12.1', 'Twisted>=15.5.0', 'pytest>=2.8.7', 'click>=6.2', 'passlib>=1.6.5'],
     license = "MiT",
     keywords = "virtual scoreboard score sport",
     packages = find_packages(),

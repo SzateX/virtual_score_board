@@ -2,7 +2,8 @@ from autobahn.twisted.websocket import WebSocketServerProtocol
 from twisted.internet.defer import Deferred
 from twisted.internet import task, reactor
 from virtual_score_board.models import Game, User
-from virtual_score_board.command_parser import Parser, ParseError, NotLogged, WrongCredentials, HoorayCorrectCredentials, SignMeOut
+from virtual_score_board.command_parser import Parser, ParseError, \
+    NotLogged, WrongCredentials, HoorayCorrectCredentials, SignMeOut
 from virtual_score_board.parser_types import ParserTypeError
 import json
 
@@ -50,14 +51,16 @@ class ServerHandler(WebSocketServerProtocol):
                 self.sendMessage(state.encode('utf-8'), isBinary=False)
                 return
             try:
-                self.parser.parse_and_execute(data, self.user)
+                response = self.parser.parse_and_execute(data, self.user)
+                if response == "OK":
+                    pass
+                elif response == "CorrectCredentials":
+                    self.user = User()
+                elif response == "SignMeOut":
+                    self.user = None
             except (ParseError, ParserTypeError, NotLogged, WrongCredentials)  as e:
                 state = json.dumps({"Error": str(e)})
                 self.sendMessage(state.encode('utf-8'), isBinary=False)
-            except HoorayCorrectCredentials:
-                self.user = User()
-            except SignMeOut:
-                self.user = None
             except:
                 state = json.dumps({"Error": "Unknown Error"})
                 self.sendMessage(state.encode('utf-8'), isBinary=False)

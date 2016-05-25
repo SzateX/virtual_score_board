@@ -130,7 +130,6 @@ class Parser(object):
     def command_ping(self):
         return Pong()
 
-
     def command_sign_in(self, login: string, password: string, user):
         with open("/home/szatku/passwords/pass.txt") as password_file:
             hashes = password_file.readlines()

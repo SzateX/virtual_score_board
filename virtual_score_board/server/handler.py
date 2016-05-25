@@ -56,9 +56,9 @@ class ServerHandler(WebSocketServerProtocol):
                 if isinstance(response, EverythingGood):
                     pass # TODO Add EverythingGood response
                 elif isinstance(response, CorrectCredentials):
-                    self.user = User()
+                    self.user = User() # TODO Add CorrectCredentials response
                 elif isinstance(response, SignMeOut):
-                    self.user = None
+                    self.user = None # TODO Add SignMeOut response
                 elif isinstance(response, Pong):
                     pass # TODO Add Pong response
             except (ParseError, ParserTypeError, NotLogged, WrongCredentials)  as e:

@@ -13,7 +13,7 @@ import click
 def main(interface, port):
     log.startLogging(sys.stdout)
 
-    factory = WebSocketServerFactory(u"ws://%s" % interface)
+    factory = WebSocketServerFactory(u"ws://%s:%s" % (interface, port))
     factory.protocol = ServerHandler
     # factory.setProtocolOptions(maxConnections=2)
 

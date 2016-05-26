@@ -3,9 +3,8 @@ from twisted.internet.defer import Deferred
 from twisted.internet import task, reactor
 from virtual_score_board.models import Game, User
 from virtual_score_board.command_parser import Parser, ParseError
-from virtual_score_board.parser_responses import CorrectCredentials, EverythingGood, SignMeOut, Pong, NotLogged,\
-    CurrentlyLogged, WrongCredentials
 from virtual_score_board.parser_types import ParserTypeError
+from virtual_score_board.parser_responses import CorrectCredentials, SignedOut, CannotParse, WrongDataType
 import json
 
 game = Game()
@@ -52,24 +51,16 @@ class ServerHandler(WebSocketServerProtocol):
                 self.sendMessage(state.encode('utf-8'), isBinary=False)
                 return
             try:
-                response = self.parser.parse_and_execute(data, self.user)  # TODO Merge into one simple function
-                if isinstance(response, EverythingGood):
-                    pass  # TODO Add EverythingGood response
-                elif isinstance(response, CorrectCredentials):
-                    self.user = User()  # TODO Add CorrectCredentials response
-                elif isinstance(response, SignMeOut):
-                    self.user = None  # TODO Add SignMeOut response
-                elif isinstance(response, Pong):
-                    pass  # TODO Add Pong response
-                elif isinstance(response, CurrentlyLogged):
-                    pass  # TODO Add CurrentlyLogged response
-                elif isinstance(response, NotLogged):
-                    pass  # TODO Add NotLogged response
-                elif isinstance(response, WrongCredentials):
-                    pass  # TODO Add WrongCredentials response
-            except (ParseError, ParserTypeError) as e:
-                state = json.dumps({"Error": str(e)})
-                self.sendMessage(state.encode('utf-8'), isBinary=False)
+                response = self.parser.parse_and_execute(data, self.user)
+                if isinstance(response, CorrectCredentials):
+                    self.user = User()
+                elif isinstance(response, SignedOut):
+                    self.user = None
+                self.send_response(response)
+            except ParseError as e:
+                self.send_response(CannotParse(str(e)))
+            except ParserTypeError as e:
+                self.send_response(WrongDataType(str(e)))
             except:
                 state = json.dumps({"Error": "Unknown Error"})
                 self.sendMessage(state.encode('utf-8'), isBinary=False)
@@ -89,10 +80,8 @@ class ServerHandler(WebSocketServerProtocol):
         self.send_data()
         self.second_deffer = task.deferLater(reactor, 1.0, self.send_data_for_second)
 
-    def send_response(self, type_of_response, code, content=None):
-        data = {"response": {"type": type_of_response,
-                             "code": code,
-                             "content": content}
+    def send_response(self, response_object):
+        data = {"response": response_object.get_response()
                 }
         state = json.dumps(data)
         self.sendMessage(state.encode('utf-8'), isBinary=False)

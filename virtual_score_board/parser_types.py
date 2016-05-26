@@ -1,5 +1,6 @@
 from virtual_score_board.models import User
 
+
 class ParserTypeError(Exception):
     pass
 

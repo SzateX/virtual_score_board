@@ -13,7 +13,7 @@ class Response(object):
         dictionary = {"type": self.type_of_response,
                       "code": self.code_of_response,
                       "status": self.status,
-                      "data": self.data
+                      "data": self.data,
                       "description": self.description
                       }
         return dictionary
@@ -36,12 +36,15 @@ class SignedOut(Response):
         super(SignedOut, self).__init__("Information", 1002, "SignedOut", data)
         self.description = "I saw you want to log out. I fulfilled your request"
 
+
 class Pong(Response):
     descriptions = ["Do you want to play table-tennis with me?", "Smash!", "You are very good!", "Pong",
                     "Are not you tired?", "Ha ha!", "1:0 for me!", "Girls will be throwing their bras for this!"]
+
     def __init__(self, data=None):
         super(Pong, self).__init__("Information", 1999, "Pong", data)
         self.description = choice(self.descriptions)
+
 
 class NotLogged(Response):
     def __init__(self, data=None):
@@ -59,3 +62,21 @@ class CurrentlyLogged(Response):
     def __init__(self, data=None):
         super(CurrentlyLogged, self).__init__("Error", 3003, "CurrentlyLogged", data)
         self.description = "You are currently logged. Why are you try to sign in twice?"
+
+
+class CannotParse(Response):
+    def __init__(self, description, data=None):
+        super(CannotParse, self).__init__("Error", 3004, "CannotParse", data)
+        self.description = description
+
+
+class WrongDataType(Response):
+    def __init__(self, description, data=None):
+        super(WrongDataType, self).__init__("Error", 3005, "WrongDataType", data)
+        self.description = description
+
+
+class UnknownError(Response):
+    def __init__(self, data=None):
+        super(UnknownError, self).__init__("Error", 3999, "UnknownError", data)
+        self.description = "Unknown Error"

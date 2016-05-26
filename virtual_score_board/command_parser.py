@@ -142,4 +142,4 @@ class Parser(object):
     def command_sign_out(user):
         if not user:
             return NotLogged()
-        return SignMeOut()
+        return SignedOut()

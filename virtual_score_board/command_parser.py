@@ -1,5 +1,5 @@
 from virtual_score_board.parser_types import integer, is_team, is_clock, is_counter, string, boolean
-from virtual_score_board.parser_responses import EverythingGood, SignMeOut, CorrectCredentials, Pong,\
+from virtual_score_board.parser_responses import EverythingGood, SignedOut, CorrectCredentials, Pong,\
     CurrentlyLogged, NotLogged, WrongCredentials
 from passlib.hash import pbkdf2_sha256
 

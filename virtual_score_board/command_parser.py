@@ -19,7 +19,8 @@ class Parser(object):
     def __init__(self, game_object):
         self.game = game_object
 
-    def validate(self, command, args):
+    @staticmethod
+    def validate(command, args):
         extra_args = set(args) - set(command.__annotations__)
         if extra_args:
             raise ParseError("Too many arguments: %s" % extra_args)
@@ -79,14 +80,14 @@ class Parser(object):
         if not user:
             raise NotLogged("Not Logged!")
         team = self.game.get_team(team)
-        team.timeout_flag = not team.timeout_flag
+        team.timeout_flag = arg
         return EverythingGood()
 
     def command_set_penalty_flag(self, team: is_team, arg: boolean, user):
         if not user:
             raise NotLogged("Not Logged!")
         team = self.game.get_team(team)
-        team.penalty_flag = not team.timeout_flag
+        team.penalty_flag = arg
         return EverythingGood()
 
     def command_points_add(self, counter: is_counter, team: is_team, arg: integer, user):
@@ -127,10 +128,12 @@ class Parser(object):
         self.game.period.set_points(arg)
         return EverythingGood()
 
-    def command_ping(self):
+    @staticmethod
+    def command_ping():
         return Pong()
 
-    def command_sign_in(self, login: string, password: string, user):
+    @staticmethod
+    def command_sign_in(login: string, password: string, user):
         with open("/home/szatku/passwords/pass.txt") as password_file:
             hashes = password_file.readlines()
             for line in hashes:
@@ -140,5 +143,6 @@ class Parser(object):
                         return CorrectCredentials()
             raise WrongCredentials("The credentials are wrong! Not logged!")
 
-    def command_sign_out(self, user):
+    @staticmethod
+    def command_sign_out(user):
         return SignMeOut()

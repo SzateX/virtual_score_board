@@ -82,3 +82,11 @@ class ServerHandler(WebSocketServerProtocol):
     def send_data_for_second(self):
         self.send_data()
         self.second_deffer = task.deferLater(reactor, 1.0, self.send_data_for_second)
+
+    def send_response(self, type_of_response, code, content=None):
+        data = {"response": {"type": type_of_response,
+                             "code": code,
+                             "content": content}
+                }
+        state = json.dumps(data)
+        self.sendMessage(state.encode('utf-8'), isBinary=False)

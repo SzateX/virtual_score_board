@@ -4,7 +4,8 @@ from twisted.internet import task, reactor
 from virtual_score_board.models import Game, User
 from virtual_score_board.command_parser import Parser, ParseError
 from virtual_score_board.parser_types import ParserTypeError
-from virtual_score_board.parser_responses import CorrectCredentials, SignedOut, CannotParse, WrongDataType
+from virtual_score_board.parser_responses import CorrectCredentials, SignedOut, CannotParse,\
+    WrongDataType, UnknownError
 import json
 
 game = Game()
@@ -62,8 +63,7 @@ class ServerHandler(WebSocketServerProtocol):
             except ParserTypeError as e:
                 self.send_response(WrongDataType(str(e)))
             except:
-                state = json.dumps({"Error": "Unknown Error"})
-                self.sendMessage(state.encode('utf-8'), isBinary=False)
+                self.send_response(UnknownError())
 
     def onClose(self, wasClean, code, reason):
         if self.second_deffer is not None:

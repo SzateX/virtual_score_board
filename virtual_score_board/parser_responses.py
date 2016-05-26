@@ -12,3 +12,15 @@ class SignMeOut(object):
 
 class Pong(object):
     pass
+
+
+class CurrentlyLogged(object):
+    pass
+
+
+class NotLogged(object):
+    pass
+
+
+class WrongCredentials(object):
+    pass

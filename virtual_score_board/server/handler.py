@@ -2,9 +2,9 @@ from autobahn.twisted.websocket import WebSocketServerProtocol
 from twisted.internet.defer import Deferred
 from twisted.internet import task, reactor
 from virtual_score_board.models import Game, User
-from virtual_score_board.command_parser import Parser, ParseError, \
-    NotLogged, WrongCredentials
-from virtual_score_board.parser_responses import CorrectCredentials, EverythingGood, SignMeOut, Pong
+from virtual_score_board.command_parser import Parser, ParseError
+from virtual_score_board.parser_responses import CorrectCredentials, EverythingGood, SignMeOut, Pong, NotLogged,\
+    CurrentlyLogged, WrongCredentials
 from virtual_score_board.parser_types import ParserTypeError
 import json
 
@@ -52,16 +52,22 @@ class ServerHandler(WebSocketServerProtocol):
                 self.sendMessage(state.encode('utf-8'), isBinary=False)
                 return
             try:
-                response = self.parser.parse_and_execute(data, self.user)
+                response = self.parser.parse_and_execute(data, self.user)  # TODO Merge into one simple function
                 if isinstance(response, EverythingGood):
-                    pass # TODO Add EverythingGood response
+                    pass  # TODO Add EverythingGood response
                 elif isinstance(response, CorrectCredentials):
-                    self.user = User() # TODO Add CorrectCredentials response
+                    self.user = User()  # TODO Add CorrectCredentials response
                 elif isinstance(response, SignMeOut):
-                    self.user = None # TODO Add SignMeOut response
+                    self.user = None  # TODO Add SignMeOut response
                 elif isinstance(response, Pong):
-                    pass # TODO Add Pong response
-            except (ParseError, ParserTypeError, NotLogged, WrongCredentials)  as e:
+                    pass  # TODO Add Pong response
+                elif isinstance(response, CurrentlyLogged):
+                    pass  # TODO Add CurrentlyLogged response
+                elif isinstance(response, NotLogged):
+                    pass  # TODO Add NotLogged response
+                elif isinstance(response, WrongCredentials):
+                    pass  # TODO Add WrongCredentials response
+            except (ParseError, ParserTypeError) as e:
                 state = json.dumps({"Error": str(e)})
                 self.sendMessage(state.encode('utf-8'), isBinary=False)
             except:

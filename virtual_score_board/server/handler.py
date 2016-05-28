@@ -73,7 +73,8 @@ class ServerHandler(WebSocketServerProtocol):
     def send_data(self):
         dictionary = game.to_dict()
         dictionary["logged"] = True if self.user else False
-        state = json.dumps(dictionary)
+        data = {"data": dictionary}
+        state = json.dumps(data)
         self.sendMessage(state.encode('utf-8'), isBinary=False)
 
     def send_data_for_second(self):

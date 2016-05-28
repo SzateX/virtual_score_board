@@ -5,7 +5,7 @@ from virtual_score_board.models import Game, User
 from virtual_score_board.command_parser import Parser, ParseError
 from virtual_score_board.parser_types import ParserTypeError
 from virtual_score_board.parser_responses import CorrectCredentials, SignedOut, CannotParse,\
-    WrongDataType, UnknownError
+    WrongDataType, UnknownError, NotJson
 import json
 
 game = Game()
@@ -48,8 +48,7 @@ class ServerHandler(WebSocketServerProtocol):
             try:
                 data = json.loads(message)
             except ValueError:
-                state = json.dumps({"Error": "This is not a json"})
-                self.sendMessage(state.encode('utf-8'), isBinary=False)
+                self.send_response(NotJson())
                 return
             try:
                 response = self.parser.parse_and_execute(data, self.user)

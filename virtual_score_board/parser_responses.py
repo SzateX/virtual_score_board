@@ -64,15 +64,21 @@ class CurrentlyLogged(Response):
         self.description = "You are currently logged. Why are you try to sign in twice?"
 
 
+class NotJson(Response):
+    def __init__(self, data=None):
+        super(NotJson, self).__init__("Error", 3004, "NotJson", data)
+        self.description = "You send data, which are not json. Please repair it!"
+
+
 class CannotParse(Response):
     def __init__(self, description, data=None):
-        super(CannotParse, self).__init__("Error", 3004, "CannotParse", data)
+        super(CannotParse, self).__init__("Error", 3005, "CannotParse", data)
         self.description = description
 
 
 class WrongDataType(Response):
     def __init__(self, description, data=None):
-        super(WrongDataType, self).__init__("Error", 3005, "WrongDataType", data)
+        super(WrongDataType, self).__init__("Error", 3006, "WrongDataType", data)
         self.description = description
 
 

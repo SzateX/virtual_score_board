@@ -1,7 +1,8 @@
 from unittest.mock import patch, Mock, MagicMock
 from datetime import datetime, timedelta
 from twisted.internet import task
-from virtual_score_board.models import Timer, Counter, Team, Game, ReverseTimer, TeamKeyError, ClockKeyError, CounterKeyError
+from virtual_score_board.models import Timer, Counter, Team, Game, ReverseTimer, \
+    TeamKeyError, ClockKeyError, CounterKeyError, User
 from virtual_score_board.command_parser import Parser, ParseError
 from virtual_score_board.parser_types import is_team, is_counter, is_clock, integer, string, boolean, ParserTypeError
 import pytest
@@ -161,7 +162,7 @@ def test_game_to_dict():
         'home_penalty': False,
         'home_timeout': False,
         'away_name': "Foo",
-        'away_score': 0,
+        'away_points': 0,
         'away_set_points': 0,
         'away_penalty': False,
         'away_timeout': False,
@@ -305,7 +306,7 @@ def test_parser_in_wrong_command_case():
     data = {"cmd": "wrong_command"}
     parser = Parser(MagicMock)
     with pytest.raises(ParseError) as excinfo:
-        parser.parse_and_execute(data)
+        parser.parse_and_execute(data, MagicMock)
     assert "No command found:" in str(excinfo.value)
 
 
@@ -313,7 +314,7 @@ def test_parser_with_less_args_case():
     data = {"cmd": "clock_stop"}
     parser = Parser(MagicMock)
     with pytest.raises(ParseError) as excinfo:
-        parser.parse_and_execute(data)
+        parser.parse_and_execute(data, MagicMock)
     assert "I need" in str(excinfo.value)
 
 
@@ -323,7 +324,7 @@ def test_parser_with_too_much_args_case():
             "arg": "soap"}
     parser = Parser(MagicMock)
     with pytest.raises(ParseError) as excinfo:
-        parser.parse_and_execute(data)
+        parser.parse_and_execute(data, MagicMock)
     assert "Too many arguments:" in str(excinfo.value)
 
 
@@ -331,7 +332,7 @@ def test_parser_clock_stop():
     data = {"cmd": "clock_stop",
             "clock": "match"}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.match_clock.end.assert_called_with()
 
 
@@ -339,7 +340,7 @@ def test_parser_clock_start():
     data = {"cmd": "clock_start",
             "clock": "twenty_four"}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.twenty_four_clock.start.assert_called_with()
 
 
@@ -347,7 +348,7 @@ def test_parser_clock_reset():
     data = {"cmd": "clock_reset",
             "clock": "twenty_four"}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.twenty_four_clock.reset_clock.assert_called_with()
 
 
@@ -356,7 +357,7 @@ def test_parser_clock_set_max_seconds():
             "clock": "match",
             "arg": 30}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.match_clock.set_max_seconds.assert_called_with(30)
 
 
@@ -365,7 +366,7 @@ def test_parser_set_name():
             "team": "home",
             "arg": "Foo"}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     assert parser.game.home_team.name == "Foo"
 
 
@@ -374,7 +375,7 @@ def test_parser_set_timeout_flag():
             "team": "away",
             "arg": True}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     assert parser.game.away_team.timeout_flag is True
 
 
@@ -383,7 +384,7 @@ def test_parser_set_penalty_flag():
             "team": "home",
             "arg": False}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     assert parser.game.home_team.penalty_flag is False
 
 
@@ -393,7 +394,7 @@ def test_points_add():
             "team": "away",
             "arg": 3}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.away_team.points.add_point.assert_called_with(3)
 
 
@@ -403,7 +404,7 @@ def test_points_subtract():
             "team": "home",
             "arg": 2}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.home_team.set_points.subtract_point.assert_called_with(2)
 
 
@@ -413,7 +414,7 @@ def test_points_set():
             "team": "away",
             "arg": 69}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.away_team.points.set_points.assert_called_with(69)
 
 
@@ -422,7 +423,7 @@ def test_points_reset():
             "counter": "set",
             "team": "home"}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.home_team.set_points.reset_points.assert_called_with()
 
 
@@ -430,5 +431,5 @@ def test_period_set():
     data = {"cmd": "period_set",
             "arg": 2}
     parser = Parser(create_game())
-    parser.parse_and_execute(data)
+    parser.parse_and_execute(data, MagicMock)
     parser.game.period.set_points.assert_called_with(2)

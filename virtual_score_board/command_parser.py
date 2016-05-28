@@ -122,7 +122,7 @@ class Parser(object):
         return EverythingGood()
 
     @staticmethod
-    def command_ping():
+    def command_ping(user):
         return Pong()
 
     @staticmethod

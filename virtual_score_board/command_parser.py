@@ -76,11 +76,25 @@ class Parser(object):
         team.timeout_flag = arg
         return EverythingGood()
 
+    def command_switch_timeout_flag(self, team: is_team, user):
+        if not user:
+            return NotLogged()
+        team = self.game.get_team(team)
+        team.timeout_flag = not team.timeout_flag
+        return EverythingGood()
+
     def command_set_penalty_flag(self, team: is_team, arg: boolean, user):
         if not user:
             return NotLogged()
         team = self.game.get_team(team)
         team.penalty_flag = arg
+        return EverythingGood()
+
+    def command_switch_penalty_flag(self, team: is_team, user):
+        if not user:
+            return NotLogged()
+        team = self.game.get_team(team)
+        team.penalty_flag = not team.penalty_flag
         return EverythingGood()
 
     def command_points_add(self, counter: is_counter, team: is_team, arg: integer, user):

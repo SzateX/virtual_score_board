@@ -5,9 +5,10 @@ from configparser import NoOptionError
 
 class ConfigManager(object):
     default_config = {
-        "interface": "0.0.0.0",
+        "host": "0.0.0.0",
         "port": 5000,
-        "append_port_to_uri": False,
+        "use_ssl": False,
+        "append_port_to_url": False,
         "log_file_path": "log.txt"
     }
     config_path = "config.ini"

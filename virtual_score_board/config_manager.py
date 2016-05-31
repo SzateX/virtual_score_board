@@ -6,15 +6,17 @@ from configparser import NoOptionError
 class ConfigManager(object):
     default_config = {
         "interface": "0.0.0.0",
-        "port": 9000
+        "port": 9000,
+        "debug": False,
+        "log_file_path": "log.txt"
     }
     config_path = ""
 
     def read_config(self):
         config = ConfigParser()
-        readed_files = config.read(self.config_path)
-        if len(readed_files) == 0:
-            sys.stderr.write("Error! I can't read config file (Propably not exists)! Loaded default config! \n")
+        read_files = config.read(self.config_path)
+        if len(read_files) == 0:
+            sys.stderr.write("Error! I can't read config file (Probably not exists)! Loaded default config! \n")
             return
         for key in self.default_config:
             try:

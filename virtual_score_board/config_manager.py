@@ -6,11 +6,11 @@ from configparser import NoOptionError
 class ConfigManager(object):
     default_config = {
         "interface": "0.0.0.0",
-        "port": 9000,
-        "debug": False,
+        "port": 5000,
+        "append_port_to_uri": False,
         "log_file_path": "log.txt"
     }
-    config_path = ""
+    config_path = "config.ini"
 
     def read_config(self):
         config = ConfigParser()

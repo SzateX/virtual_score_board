@@ -20,7 +20,7 @@ class ConfigManager(object):
             return
         for key in self.default_config:
             try:
-                setattr(self, key, config.get('AppConfig', key)
+                setattr(self, key, config.get('AppConfig', key))
             except NoOptionError:
                 sys.stderr.write("[AppConfig].%s doesn't exist. Loaded default value! \n" % key)
                 setattr(self, key, self.default_config[key])

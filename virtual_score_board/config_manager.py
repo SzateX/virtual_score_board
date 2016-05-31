@@ -8,7 +8,6 @@ class ConfigManager(object):
         "host": "0.0.0.0",
         "port": 5000,
         "use_ssl": False,
-        "append_port_to_url": False,
         "log_file_path": "log.txt"
     }
     config_path = "config.ini"

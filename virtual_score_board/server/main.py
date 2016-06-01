@@ -16,14 +16,16 @@ def main():
     config.read_config()
 
     # log.startLogging(sys.stdout)
-    with open(config.log_file_path, "a") as log_file:
-        log.startLogging(log_file)
+    # with open(config.log_file_path, "a") as log_file:
+    #     log.startLogging(log_file)
+
+    log.startLogging(open(config.log_file_path, 'w'))
 
     factory = WebSocketServerFactory(u"%s://%s:%s" % ("wss" if config.use_ssl else "ws", config.host, config.port))
     factory.protocol = ServerHandler
     # factory.setProtocolOptions(maxConnections=2)
 
-    reactor.listenTCP(int(port), factory)
+    reactor.listenTCP(int(config.port), factory)
     reactor.run()
 
 if __name__ == "__main__":

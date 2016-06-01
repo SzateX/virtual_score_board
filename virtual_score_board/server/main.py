@@ -1,6 +1,6 @@
 from autobahn.twisted.websocket import WebSocketServerFactory
 from virtual_score_board.server.handler import ServerHandler
-import sys
+# import sys
 from twisted.python import log
 from twisted.internet import reactor
 from virtual_score_board.config_manager import ConfigManager

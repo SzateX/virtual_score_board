@@ -16,7 +16,8 @@ def main():
     config.read_config()
 
     # log.startLogging(sys.stdout)
-    log.startLogging(config.log_file_path)
+    with open(config.log_file_path, "a") as log_file:
+        log.startLogging(log_file)
 
     factory = WebSocketServerFactory(u"%s://%s:%s" % ("wss" if config.use_ssl else "ws", config.host, config.port))
     factory.protocol = ServerHandler

@@ -12,7 +12,7 @@ from virtual_score_board.config_manager import ConfigManager
 # @click.option('--interface', default="0.0.0.0", prompt='Please enter interface ip (default=0.0.0.0)',
 #             help='Ip of interface. (default=0.0.0.0)')
 def main():
-    config = ConfigManager()
+    config = ConfigManager.get_config()
     config.read_config()
 
     # log.startLogging(sys.stdout)

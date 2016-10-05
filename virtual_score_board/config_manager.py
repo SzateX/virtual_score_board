@@ -11,6 +11,13 @@ class ConfigManager(object):
         "log_file_path": "log.txt"
     }
     config_path = "config.ini"
+    _instance = None
+
+    @classmethod
+    def get_config(cls):
+        if cls._instance is None:
+            cls._instance = ConfigManager()
+        return cls._instance
 
     def read_config(self):
         config = ConfigParser()

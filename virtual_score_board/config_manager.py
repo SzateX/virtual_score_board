@@ -8,7 +8,11 @@ class ConfigManager(object):
         "host": "0.0.0.0",
         "port": 5000,
         "use_ssl": False,
-        "log_file_path": "log.txt"
+        "log_file_path": "log.txt",
+        "mysql_host": "localhost",
+        "db_name": "scoreboard",
+        "db_user": "admin",
+        "db_password": "1qazxsw2"
     }
     config_path = "config.ini"
     _instance = None

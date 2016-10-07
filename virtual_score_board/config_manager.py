@@ -10,8 +10,8 @@ class ConfigManager(object):
         "use_ssl": False,
         "log_file_path": "log.txt",
         "mysql_host": "localhost",
-        "db_name": "scoreboard",
-        "db_user": "admin",
+        "db_name": "dupa",
+        "db_username": "root",
         "db_password": "1qazxsw2"
     }
     config_path = "config.ini"
@@ -35,3 +35,7 @@ class ConfigManager(object):
             except NoOptionError:
                 sys.stderr.write("[AppConfig].%s doesn't exist. Loaded default value! \n" % key)
                 setattr(self, key, self.default_config[key])
+
+    def __init__(self):
+        print("Odpalam inita")
+        self.read_config()

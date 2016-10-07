@@ -1,4 +1,4 @@
-from virtual_score_board.db_manager import DBManager
+from virtual_score_board.db_manager import DBManager, User, Address, PassHash
 from sqlalchemy import select
 
 
@@ -13,12 +13,11 @@ class CredentialsManager(object):
 
     def __init__(self):
         self.db = DBManager.get_connection_manager()
+        self.db_session = self.db.session
 
     def sign_in(self, name, password):
-        sel = select([self.db.pass_hashes.c.pass_hash]).select_from(
-            self.db.users.join(self.db.pass_hashes)).where(
-            self.db.users.c.name == name)
-        result = self.db.connection.execute(sel)
+        result = self.db_session.query(User.name, PassHash.pass_hash).join(
+            PassHash).filter(User.name == name)
         hashes = []
         for hashed in result:
             hashes.append(hashed)
@@ -27,4 +26,4 @@ class CredentialsManager(object):
             raise Exception
         elif len(hashes) > 1:
             raise Exception
-        #return User()
+        # return User()

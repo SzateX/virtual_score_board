@@ -1,11 +1,56 @@
-from sqlalchemy import create_engine, Table, Column, Integer, \
-    String, MetaData, ForeignKey, select
+from sqlalchemy import create_engine, Column, Integer, \
+    String, ForeignKey
 from virtual_score_board.config_manager import ConfigManager
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+
+
+Base = declarative_base()
+Session = sessionmaker()
+
+
+class Address(Base):
+    __tablename__ = 'addresses'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(None, ForeignKey('users.id'), nullable=False)
+    email_address = Column(String(150), nullable=False)
+
+    user = relationship("User", back_populates="addresses")
+
+    def __repr__(self):
+        return "<Address(email_address='%s')>" % self.email_address
+
+
+class PassHash(Base):
+    __tablename__ = 'pass_hashes'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(None, ForeignKey('users.id'), nullable=False)
+    pass_hash = Column(String(200), nullable=False)
+
+    user = relationship("User", back_populates="pass_hashes")
+
+    def __repr__(self):
+        return "<PassHash(pass_hash='%s')>" % self.pass_hash
+
+
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column('id', Integer, primary_key=True)
+    name = Column('name', String(80), nullable=False)
+    fullname = Column('fullname', String(80))
+
+    addresses = relationship("Address", order_by = Address.id, back_populates = "user")
+
+    def __repr__(self):
+        return "<User(name='%s', fullname='%s')>" % (
+            self.name, self.fullname)
 
 
 class DBManager(object):
-    metadata = MetaData()
-    users = Table('users', metadata,
+    """users = Table('users', metadata,
                   Column('id', Integer, primary_key=True),
                   Column('name', String(80), nullable=False),
                   Column('fullname', String(80)))
@@ -18,7 +63,7 @@ class DBManager(object):
     pass_hashes = Table('pass_hashes', metadata,
                         Column('id', Integer, primary_key=True),
                         Column('user_id', None, ForeignKey('users.id')),
-                        Column('pass_hash', String(200), nullable=False))
+                        Column('pass_hash', String(200), nullable=False))"""
 
     _instance = None
 
@@ -35,12 +80,21 @@ class DBManager(object):
                                                     config.db_password,
                                                     config.mysql_host,
                                                     config.db_name), echo=True)
-        self.metadata.create_all(self.engine)
-        self.connection = self.engine.connect()
+        Base.metadata.create_all(self.engine)
+        Session.configure(bind=self.engine)
+        self.session = Session()
+
+print(User.__table__)
+
+db = DBManager()
+session = db.session
+result = session.query(User.name, PassHash.pass_hash).join(PassHash).filter(
+    User.name == "Szatku")
+for row in result:
+    print(row)
 
 
-"""db = DBManager()
-sel = select([db.users.c.name,
+"""sel = select([db.users.c.name,
               db.pass_hashes.c.pass_hash]).select_from(db.users.join(
     db.pass_hashes)).where(
     db.users.c.name == "Szatku")
